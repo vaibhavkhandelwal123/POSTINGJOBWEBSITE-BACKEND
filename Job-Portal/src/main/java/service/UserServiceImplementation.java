@@ -35,4 +35,11 @@ public class UserServiceImplementation implements UserService {
                 .map(User::toEntity)
                 .toList();
     }
+
+    public void delete(String email) {
+        if (!userRepository.existsByEmail(email)) {
+            throw new RuntimeException("User with email " + email + " not found");
+        }
+        userRepository.deleteByEmail(email);
+    }
 }

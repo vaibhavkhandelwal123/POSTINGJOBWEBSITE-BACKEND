@@ -29,6 +29,16 @@ public class UserAPI {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/userdel")
+    public ResponseEntity<String> deleteUser(@RequestParam String email){
+        try {
+            userService.delete(email);
+            return ResponseEntity.ok("User with email " + email + " deleted successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/hello")
     public String hello() {
         return "Hello from UserAPI!";

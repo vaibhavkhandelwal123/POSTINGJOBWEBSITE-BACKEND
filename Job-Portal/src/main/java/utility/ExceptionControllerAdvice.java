@@ -22,4 +22,5 @@ public class ExceptionControllerAdvice {
         ErrorInfo errorInfo = new ErrorInfo(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
+
 }
