@@ -1,14 +1,18 @@
 package api;
 
 import dto.UserDTO;
+import exception.JobPortalException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import service.UserService;
 
 import java.util.List;
 
+@Validated
 @RestController
 @CrossOrigin
 @RequestMapping("/users")
@@ -24,7 +28,7 @@ public class UserAPI {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> registerUser(@RequestBody @Valid UserDTO userDTO) throws Exception {
         UserDTO savedUser = userService.registerUser(userDTO);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }

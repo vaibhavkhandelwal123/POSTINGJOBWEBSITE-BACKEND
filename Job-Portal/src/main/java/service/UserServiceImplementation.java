@@ -2,10 +2,13 @@ package service;
 
 import dto.UserDTO;
 import entity.User;
+import exception.JobPortalException;
 import exception.UserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
+import utility.Utilities;
+
 import java.util.List;
 
 @Service
@@ -19,10 +22,11 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserDTO registerUser(UserDTO userDTO) {
+    public UserDTO registerUser(UserDTO userDTO) throws Exception {
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("User already exists with email: " + userDTO.getEmail());
         }
+        userDTO.setId(Utilities.getNextSequence("users"));
         User user = userDTO.toEntity();
         user = userRepository.save(user);
         return user.toEntity();
