@@ -2,23 +2,24 @@ package service;
 
 import dto.UserDTO;
 import entity.User;
-import exception.JobPortalException;
 import exception.UserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 import utility.Utilities;
 
 import java.util.List;
-
 @Service
 public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImplementation(UserRepository userRepository) {
+    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -27,6 +28,7 @@ public class UserServiceImplementation implements UserService {
             throw new UserAlreadyExistsException("User already exists with email: " + userDTO.getEmail());
         }
         userDTO.setId(Utilities.getNextSequence("users"));
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = userDTO.toEntity();
         user = userRepository.save(user);
         return user.toEntity();
