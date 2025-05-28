@@ -22,6 +22,7 @@ public class ExceptionControllerAdvice {
         return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorInfo> handleUserExistsException(UserAlreadyExistsException ex) {
         ErrorInfo errorInfo = new ErrorInfo(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());

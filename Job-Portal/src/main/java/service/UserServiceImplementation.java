@@ -1,7 +1,9 @@
 package service;
 
+import dto.LoginDTO;
 import dto.UserDTO;
 import entity.User;
+import exception.JobPortalException;
 import exception.UserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,5 +49,14 @@ public class UserServiceImplementation implements UserService {
             throw new RuntimeException("User with email " + email + " not found");
         }
         userRepository.deleteByEmail(email);
+    }
+
+    @Override
+    public UserDTO loginUser(LoginDTO loginDTO) throws JobPortalException {
+        User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(()->new JobPortalException("User is not registered"));
+        if(!passwordEncoder.matches(loginDTO.getPassword(),user.getPassword())){
+            throw new JobPortalException("Invalid Credentials");
+        }
+        return user.toEntity();
     }
 }

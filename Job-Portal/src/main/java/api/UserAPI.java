@@ -1,5 +1,6 @@
 package api;
 
+import dto.LoginDTO;
 import dto.UserDTO;
 import exception.JobPortalException;
 import jakarta.validation.Valid;
@@ -31,6 +32,10 @@ public class UserAPI {
     public ResponseEntity<UserDTO> registerUser(@RequestBody @Valid UserDTO userDTO) throws Exception {
         UserDTO savedUser = userService.registerUser(userDTO);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> loginUser(@RequestBody @Valid LoginDTO loginDTO) throws Exception {
+        return new ResponseEntity<>(userService.loginUser(loginDTO),HttpStatus.OK);
     }
 
     @DeleteMapping("/userdel")
