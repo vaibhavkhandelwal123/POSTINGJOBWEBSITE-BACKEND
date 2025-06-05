@@ -6,6 +6,7 @@ import entity.User;
 import exception.JobPortalException;
 import exception.UserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
@@ -59,4 +60,15 @@ public class UserServiceImplementation implements UserService {
         }
         return user.toEntity();
     }
+
+    @Override
+    public UserDTO forgotUser(LoginDTO loginDTO) {
+        User user = userRepository.findByEmail(loginDTO.getEmail())
+                .orElseThrow(() -> new JobPortalException("User is not registered"));
+        String encodedPassword = passwordEncoder.encode(loginDTO.getPassword());
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+        return user.toEntity();
+    }
+
 }

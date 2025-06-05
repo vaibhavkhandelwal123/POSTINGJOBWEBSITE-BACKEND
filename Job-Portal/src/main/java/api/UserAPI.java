@@ -48,6 +48,11 @@ public class UserAPI {
         }
     }
 
+    @PostMapping("/forgot")
+    public ResponseEntity<UserDTO> forgotUser(@RequestBody LoginDTO code){
+        return new ResponseEntity<>(userService.forgotUser(code),HttpStatus.OK);
+    }
+
     @GetMapping("/hello")
     public String hello() {
         return "Hello from UserAPI!";

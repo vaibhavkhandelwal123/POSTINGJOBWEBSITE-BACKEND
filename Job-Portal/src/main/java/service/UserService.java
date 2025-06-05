@@ -4,6 +4,7 @@ import dto.LoginDTO;
 import dto.UserDTO;
 import exception.JobPortalException;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface UserService {
     List<UserDTO> getAllUsers();
     void delete(String email);
     public UserDTO loginUser(LoginDTO loginDTO);
+    public UserDTO forgotUser(LoginDTO loginDTO);
 }
