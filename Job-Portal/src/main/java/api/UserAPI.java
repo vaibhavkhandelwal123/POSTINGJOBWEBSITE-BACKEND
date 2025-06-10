@@ -1,6 +1,7 @@
 package api;
 
 import dto.LoginDTO;
+import dto.ResponseDTO;
 import dto.UserDTO;
 import exception.JobPortalException;
 import jakarta.validation.Valid;
@@ -56,5 +57,11 @@ public class UserAPI {
     @GetMapping("/hello")
     public String hello() {
         return "Hello from UserAPI!";
+    }
+
+    @PostMapping("/sendOtp/{email}")
+    public ResponseEntity<ResponseDTO> sendOtp(@PathVariable String email) throws Exception{
+        userService.sendOtp(email);
+        return new ResponseEntity<>(new ResponseDTO("OTP sent successfully..."),HttpStatus.OK);
     }
 }

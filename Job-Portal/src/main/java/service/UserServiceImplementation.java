@@ -1,17 +1,25 @@
 package service;
 
 import dto.LoginDTO;
+import dto.ResponseDTO;
 import dto.UserDTO;
+import entity.OTP;
 import entity.User;
 import exception.JobPortalException;
 import exception.UserAlreadyExistsException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import repository.OTPRespository;
 import repository.UserRepository;
 import utility.Utilities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class UserServiceImplementation implements UserService {
@@ -19,6 +27,10 @@ public class UserServiceImplementation implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private OTPRespository otpRespository;
+    @Autowired
+    private JavaMailSender javaMailSender;
     @Autowired
     public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -69,6 +81,22 @@ public class UserServiceImplementation implements UserService {
         user.setPassword(encodedPassword);
         userRepository.save(user);
         return user.toEntity();
+    }
+
+    @Override
+    public Boolean sendOtp(String email) throws Exception {
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new JobPortalException("User is not registered"));
+        MimeMessage mm=javaMailSender.createMimeMessage();
+        MimeMessageHelper message = new MimeMessageHelper(mm,true);
+        message.setTo(email);
+        message.setSubject("Your OTP Code");
+        String genOtp = Utilities.generateOTP();
+        OTP otp= new OTP(email,genOtp, LocalDateTime.now());
+        otpRespository.save(otp);
+        message.setText("Your Code is : "+genOtp,false);
+        javaMailSender.send(mm);
+        return true;
     }
 
 }

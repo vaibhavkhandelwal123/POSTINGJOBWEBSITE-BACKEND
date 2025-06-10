@@ -14,4 +14,6 @@ public interface UserService {
     void delete(String email);
     public UserDTO loginUser(LoginDTO loginDTO);
     public UserDTO forgotUser(LoginDTO loginDTO);
+
+    public Boolean sendOtp(String email) throws Exception;
 }
