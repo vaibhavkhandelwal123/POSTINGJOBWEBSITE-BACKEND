@@ -13,10 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import repository.OTPRespository;
 import repository.UserRepository;
+import utility.Data;
 import utility.Utilities;
 
 import java.time.LocalDateTime;
@@ -74,29 +76,53 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserDTO forgotUser(LoginDTO loginDTO) {
+    public ResponseDTO forgotUser(LoginDTO loginDTO) {
         User user = userRepository.findByEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new JobPortalException("User is not registered"));
         String encodedPassword = passwordEncoder.encode(loginDTO.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
-        return user.toEntity();
+        return new ResponseDTO("Password changed successfully");
     }
 
     @Override
     public Boolean sendOtp(String email) throws Exception {
         userRepository.findByEmail(email)
                 .orElseThrow(() -> new JobPortalException("User is not registered"));
-        MimeMessage mm=javaMailSender.createMimeMessage();
-        MimeMessageHelper message = new MimeMessageHelper(mm,true);
-        message.setTo(email);
-        message.setSubject("Your OTP Code");
+
         String genOtp = Utilities.generateOTP();
-        OTP otp= new OTP(email,genOtp, LocalDateTime.now());
+        OTP otp = new OTP(email, genOtp, LocalDateTime.now());
         otpRespository.save(otp);
-        message.setText("Your Code is : "+genOtp,false);
+
+        String htmlContent = Data.buildOtpEmail(email,genOtp);
+
+        MimeMessage mm = javaMailSender.createMimeMessage();
+        MimeMessageHelper message = new MimeMessageHelper(mm, true, "UTF-8");
+        message.setTo(email);
+        message.setSubject("Your OTP Code for Secure Access");
+        message.setText(htmlContent, true);
+
         javaMailSender.send(mm);
         return true;
+    }
+
+    @Override
+    public Boolean verifyOtp(String email,String otp) {
+        OTP otpEntity = otpRespository.findById(email).orElseThrow(()->new JobPortalException("OTP is expired"));
+        if(!otpEntity.getOtpCode().equals(otp)){
+            throw new JobPortalException("OTP is incorrect");
+        }
+        return true;
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void removeExpiredOTPs(){
+        LocalDateTime exp = LocalDateTime.now().minusMinutes(5);
+        List<OTP> expiredOtps=otpRespository.findByCreationTimeBefore(exp);
+        if(!expiredOtps.isEmpty()){
+            otpRespository.deleteAll(expiredOtps);
+            System.out.println("Removed "+expiredOtps.size()+" expired OTPs.");
+        }
     }
 
 }

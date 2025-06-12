@@ -5,6 +5,8 @@ import dto.ResponseDTO;
 import dto.UserDTO;
 import exception.JobPortalException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +52,7 @@ public class UserAPI {
     }
 
     @PostMapping("/forgot")
-    public ResponseEntity<UserDTO> forgotUser(@RequestBody LoginDTO code){
+    public ResponseEntity<ResponseDTO> forgotUser(@RequestBody LoginDTO code) throws JobPortalException{
         return new ResponseEntity<>(userService.forgotUser(code),HttpStatus.OK);
     }
 
@@ -60,8 +62,14 @@ public class UserAPI {
     }
 
     @PostMapping("/sendOtp/{email}")
-    public ResponseEntity<ResponseDTO> sendOtp(@PathVariable String email) throws Exception{
+    public ResponseEntity<ResponseDTO> sendOtp(@PathVariable @Email(message = "{user.email.invalid}") String email) throws Exception{
         userService.sendOtp(email);
         return new ResponseEntity<>(new ResponseDTO("OTP sent successfully..."),HttpStatus.OK);
+    }
+
+    @GetMapping("/verifyOtp/{email}/{otp}")
+    public ResponseEntity<ResponseDTO> verifyOtp(@PathVariable @Email(message = "{user.email.invalid}") String email ,@PathVariable @Pattern(regexp = "^[0-9]{6}$",message = "{otp.invalid}") String otp) throws Exception{
+        userService.verifyOtp(email,otp);
+        return new ResponseEntity<>(new ResponseDTO("OTP has been verified"),HttpStatus.OK);
     }
 }

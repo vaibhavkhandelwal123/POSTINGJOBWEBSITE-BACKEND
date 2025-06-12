@@ -1,6 +1,7 @@
 package service;
 
 import dto.LoginDTO;
+import dto.ResponseDTO;
 import dto.UserDTO;
 import exception.JobPortalException;
 import jakarta.validation.Valid;
@@ -13,7 +14,9 @@ public interface UserService {
     List<UserDTO> getAllUsers();
     void delete(String email);
     public UserDTO loginUser(LoginDTO loginDTO);
-    public UserDTO forgotUser(LoginDTO loginDTO);
+    public ResponseDTO forgotUser(LoginDTO loginDTO) throws JobPortalException;
 
     public Boolean sendOtp(String email) throws Exception;
+
+    public Boolean verifyOtp(String email,String otp);
 }
