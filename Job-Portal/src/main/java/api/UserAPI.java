@@ -52,7 +52,7 @@ public class UserAPI {
     }
 
     @PostMapping("/forgot")
-    public ResponseEntity<ResponseDTO> forgotUser(@RequestBody LoginDTO code) throws JobPortalException{
+    public ResponseEntity<ResponseDTO> forgotUser(@RequestBody LoginDTO code){
         return new ResponseEntity<>(userService.forgotUser(code),HttpStatus.OK);
     }
 

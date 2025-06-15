@@ -23,6 +23,9 @@ import utility.Utilities;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
+
 @Service
 public class UserServiceImplementation implements UserService {
 
@@ -79,6 +82,14 @@ public class UserServiceImplementation implements UserService {
     public ResponseDTO forgotUser(LoginDTO loginDTO) {
         User user = userRepository.findByEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new JobPortalException("User is not registered"));
+        if(loginDTO.getPassword().trim().isEmpty()){
+            throw new JobPortalException("password field is empty");
+        }
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$";
+        Boolean flag = Pattern.matches(regex,loginDTO.getPassword());
+        if(!flag){
+            throw new JobPortalException("password is not Strong...");
+        }
         String encodedPassword = passwordEncoder.encode(loginDTO.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
