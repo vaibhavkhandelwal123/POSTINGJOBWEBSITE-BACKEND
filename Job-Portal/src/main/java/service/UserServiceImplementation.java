@@ -36,6 +36,9 @@ public class UserServiceImplementation implements UserService {
     private OTPRespository otpRespository;
     @Autowired
     private JavaMailSender javaMailSender;
+
+    @Autowired
+    private ProfileService profileService;
     @Autowired
     public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -47,6 +50,7 @@ public class UserServiceImplementation implements UserService {
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("User already exists with email: " + userDTO.getEmail());
         }
+        userDTO.setProfileId(profileService.createProfile(userDTO.getEmail()));
         userDTO.setId(Utilities.getNextSequence("users"));
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = userDTO.toEntity();
