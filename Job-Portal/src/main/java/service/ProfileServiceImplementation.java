@@ -1,5 +1,6 @@
 package service;
 
+import dto.ProfileDTO;
 import entity.Profile;
 import exception.JobPortalException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,17 @@ public class ProfileServiceImplementation implements ProfileService {
         profileRepository.save(profile);
         return profile.getId();
 
+    }
+
+    @Override
+    public ProfileDTO getProfile(Long id) throws JobPortalException {
+        return profileRepository.findById(id).orElseThrow(()->new JobPortalException("Profile not found")).toDTO();
+    }
+
+    @Override
+    public ProfileDTO updateProfile(ProfileDTO profileDTO) throws JobPortalException {
+        profileRepository.findById(profileDTO.getId()).orElseThrow(()->new JobPortalException("Profile not found"));
+        profileRepository.save(profileDTO.toEntity());
+        return profileDTO;
     }
 }
