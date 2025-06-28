@@ -25,7 +25,6 @@ public class ProfileServiceImplementation implements ProfileService {
         profile.setCertifications(new ArrayList<>());
         profileRepository.save(profile);
         return profile.getId();
-
     }
 
     @Override

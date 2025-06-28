@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Base64;
 import java.util.List;
 
 @Data
@@ -23,12 +24,13 @@ public class Profile {
     private String company;
     private String location;
     private String about;
+    private byte[] pictures;
     private List<String>skills;
     private List<Experience>experiences;
     private List<Certification>certifications;
 
     public ProfileDTO toDTO(){
-        return new ProfileDTO(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.skills,this.experiences,this.certifications);
+        return new ProfileDTO(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getEncoder().encodeToString(this.pictures):null,this.skills,this.experiences,this.certifications);
     }
 
 }
