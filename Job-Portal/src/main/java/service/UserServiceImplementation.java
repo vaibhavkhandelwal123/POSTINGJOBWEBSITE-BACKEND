@@ -89,11 +89,12 @@ public class UserServiceImplementation implements UserService {
         if(loginDTO.getPassword().trim().isEmpty()){
             throw new JobPortalException("password field is empty");
         }
-        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$";
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!+=%-*?&#])[A-Za-z\\d@$!+=%-*?&#]{8,}$";
         Boolean flag = Pattern.matches(regex,loginDTO.getPassword());
         if(!flag){
             throw new JobPortalException("password is not Strong...");
         }
+
         String encodedPassword = passwordEncoder.encode(loginDTO.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
