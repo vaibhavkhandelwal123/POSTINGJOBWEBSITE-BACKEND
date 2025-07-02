@@ -1,8 +1,6 @@
 package service;
 
 import dto.JobDTO;
-import entity.Job;
-import entity.User;
 import exception.JobPortalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
