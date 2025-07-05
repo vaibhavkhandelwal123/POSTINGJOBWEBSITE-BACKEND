@@ -1,8 +1,6 @@
 package api;
 
-import dto.JobDTO;
-import dto.ProfileDTO;
-import dto.UserDTO;
+import dto.*;
 import exception.JobPortalException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +34,10 @@ public class JobAPI {
     @GetMapping("/get/{id}")
     public ResponseEntity<JobDTO>getJob(@PathVariable Long id) throws JobPortalException{
         return new ResponseEntity<>(jobService.getjob(id), HttpStatus.OK);
+    }
+    @PostMapping("/apply/{id}")
+    public ResponseEntity<ResponseDTO> applyJob(@PathVariable Long id,@RequestBody ApplicantDTO applicantDTO) throws JobPortalException {
+        jobService.applyJob(id,applicantDTO);
+        return new ResponseEntity<>(new ResponseDTO("Applied Successfully"),HttpStatus.OK);
     }
 }
