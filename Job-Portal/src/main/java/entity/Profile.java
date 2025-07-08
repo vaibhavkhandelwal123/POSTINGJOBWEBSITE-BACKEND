@@ -28,9 +28,9 @@ public class Profile {
     private List<String>skills;
     private List<Experience>experiences;
     private List<Certification>certifications;
-
+    private List<Long>savedJobs;
     public ProfileDTO toDTO(){
-        return new ProfileDTO(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getEncoder().encodeToString(this.pictures):null,this.skills,this.experiences,this.certifications);
+        return new ProfileDTO(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getEncoder().encodeToString(this.pictures):null,this.skills,this.experiences,this.certifications,this.savedJobs);
     }
 
 }

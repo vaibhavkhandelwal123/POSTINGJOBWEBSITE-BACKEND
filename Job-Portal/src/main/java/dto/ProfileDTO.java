@@ -23,7 +23,8 @@ public class ProfileDTO {
     private List<String> skills;
     private List<Experience>experiences;
     private List<Certification>certifications;
+    private List<Long>savedJobs;
     public Profile toEntity(){
-        return new Profile(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getDecoder().decode(this.pictures):null,this.skills,this.experiences,this.certifications);
+        return new Profile(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getDecoder().decode(this.pictures):null,this.skills,this.experiences,this.certifications,this.savedJobs);
     }
 }
