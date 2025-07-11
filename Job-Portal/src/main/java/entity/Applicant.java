@@ -22,8 +22,10 @@ public class Applicant {
     private String coverLetter;
     private LocalDateTime timeStamp;
     private ApplicationStatus applicationStatus;
+    private LocalDateTime interviewTime;
+
 
     public ApplicantDTO toDTO(){
-        return new ApplicantDTO(this.applicantId,this.name,this.email,this.phone,this.website,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timeStamp,this.applicationStatus);
+        return new ApplicantDTO(this.applicantId,this.name,this.email,this.phone,this.website,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timeStamp,this.applicationStatus,this.interviewTime);
     }
 }

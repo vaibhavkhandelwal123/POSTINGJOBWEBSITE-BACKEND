@@ -9,6 +9,7 @@ import repository.ProfileRepository;
 import utility.Utilities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service("profileService")
 public class ProfileServiceImplementation implements ProfileService {
@@ -37,5 +38,10 @@ public class ProfileServiceImplementation implements ProfileService {
         profileRepository.findById(profileDTO.getId()).orElseThrow(()->new JobPortalException("Profile not found"));
         profileRepository.save(profileDTO.toEntity());
         return profileDTO;
+    }
+
+    @Override
+    public List<ProfileDTO> getAllProfiles() throws JobPortalException {
+        return profileRepository.findAll().stream().map((x)->x.toDTO()).toList();
     }
 }

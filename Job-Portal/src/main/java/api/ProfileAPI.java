@@ -1,5 +1,6 @@
 package api;
 
+import dto.JobDTO;
 import dto.ProfileDTO;
 import exception.JobPortalException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import service.ProfileService;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -27,4 +30,10 @@ public class ProfileAPI {
     public ResponseEntity<ProfileDTO>updateProfile(@RequestBody ProfileDTO profileDTO)throws JobPortalException{
         return new ResponseEntity<>(profileService.updateProfile(profileDTO),HttpStatus.OK);
     }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<ProfileDTO>>getAllProfiles() throws JobPortalException{
+        return new ResponseEntity<>(profileService.getAllProfiles(), HttpStatus.OK);
+    }
+
 }
