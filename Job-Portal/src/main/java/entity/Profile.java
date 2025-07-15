@@ -19,6 +19,7 @@ import java.util.List;
 public class Profile {
     @Id
     private Long id;
+    private String name;
     private String email;
     private String jobTitle;
     private String company;
@@ -30,7 +31,7 @@ public class Profile {
     private List<Certification>certifications;
     private List<Long>savedJobs;
     public ProfileDTO toDTO(){
-        return new ProfileDTO(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getEncoder().encodeToString(this.pictures):null,this.skills,this.experiences,this.certifications,this.savedJobs);
+        return new ProfileDTO(this.id,this.name,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getEncoder().encodeToString(this.pictures):null,this.skills,this.experiences,this.certifications,this.savedJobs);
     }
 
 }

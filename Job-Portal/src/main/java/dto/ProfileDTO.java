@@ -14,6 +14,7 @@ import java.util.List;
 public class ProfileDTO {
 
     private Long id;
+    private String name;
     private String email;
     private String jobTitle;
     private String company;
@@ -25,6 +26,6 @@ public class ProfileDTO {
     private List<Certification>certifications;
     private List<Long>savedJobs;
     public Profile toEntity(){
-        return new Profile(this.id,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getDecoder().decode(this.pictures):null,this.skills,this.experiences,this.certifications,this.savedJobs);
+        return new Profile(this.id,this.name,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getDecoder().decode(this.pictures):null,this.skills,this.experiences,this.certifications,this.savedJobs);
     }
 }
