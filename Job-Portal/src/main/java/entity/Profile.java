@@ -26,12 +26,13 @@ public class Profile {
     private String location;
     private String about;
     private byte[] pictures;
+    private Long totalExp;
     private List<String>skills;
     private List<Experience>experiences;
     private List<Certification>certifications;
     private List<Long>savedJobs;
     public ProfileDTO toDTO(){
-        return new ProfileDTO(this.id,this.name,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getEncoder().encodeToString(this.pictures):null,this.skills,this.experiences,this.certifications,this.savedJobs);
+        return new ProfileDTO(this.id,this.name,this.email,this.jobTitle,this.company,this.location,this.about,this.pictures!=null? Base64.getEncoder().encodeToString(this.pictures):null,this.totalExp,this.skills,this.experiences,this.certifications,this.savedJobs);
     }
 
 }

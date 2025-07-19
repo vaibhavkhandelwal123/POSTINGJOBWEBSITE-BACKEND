@@ -20,8 +20,16 @@ public class JobServiceImplementation implements JobService {
 
     @Override
     public JobDTO postJob(JobDTO jobDTO) throws Exception {
-        jobDTO.setId(Utilities.getNextSequence("jobs"));
-        jobDTO.setPostTime(LocalDateTime.now());
+        if(jobDTO.getId()==0){
+            jobDTO.setId(Utilities.getNextSequence("jobs"));
+            jobDTO.setPostTime(LocalDateTime.now());
+        }
+        else{
+            jobRepository.findById(jobDTO.getId()).orElseThrow(()->new JobPortalException("Job not found"));
+            if(jobDTO.getJobStatus().equals(JobStatus.DRAFT) ||jobDTO.getJobStatus().equals(JobStatus.CLOSED)){
+                jobDTO.setPostTime(LocalDateTime.now());
+            }
+        }
         return jobRepository.save(jobDTO.toEntity()).toDTO();
     }
 
