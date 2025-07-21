@@ -1,6 +1,7 @@
 package service;
 
 import dto.LoginDTO;
+import dto.NotificationDTO;
 import dto.ResponseDTO;
 import dto.UserDTO;
 import entity.OTP;
@@ -16,6 +17,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import repository.NotificationRepository;
 import repository.OTPRespository;
 import repository.UserRepository;
 import utility.Data;
@@ -37,6 +39,8 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private NotificationService notificationService;
     @Autowired
     private ProfileService profileService;
     @Autowired
@@ -83,7 +87,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public ResponseDTO forgotUser(LoginDTO loginDTO) {
+    public ResponseDTO forgotUser(LoginDTO loginDTO) throws Exception {
         User user = userRepository.findByEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new JobPortalException("User is not registered"));
         if(loginDTO.getPassword().trim().isEmpty()){
@@ -98,6 +102,11 @@ public class UserServiceImplementation implements UserService {
         String encodedPassword = passwordEncoder.encode(loginDTO.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
+        NotificationDTO noti= new NotificationDTO();
+        noti.setUserId(user.getId());
+        noti.setMessage("Password Reset Successfully");
+        noti.setAction("Password Reset");
+        notificationService.sendNotification(noti);
         return new ResponseDTO("Password changed successfully");
     }
 

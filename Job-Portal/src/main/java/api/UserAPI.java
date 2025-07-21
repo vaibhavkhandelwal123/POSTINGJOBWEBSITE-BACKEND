@@ -52,7 +52,7 @@ public class UserAPI {
     }
 
     @PostMapping("/forgot")
-    public ResponseEntity<ResponseDTO> forgotUser(@RequestBody LoginDTO code){
+    public ResponseEntity<ResponseDTO> forgotUser(@RequestBody LoginDTO code) throws Exception{
         return new ResponseEntity<>(userService.forgotUser(code),HttpStatus.OK);
     }
 
