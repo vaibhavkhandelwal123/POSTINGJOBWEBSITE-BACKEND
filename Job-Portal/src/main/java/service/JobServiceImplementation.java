@@ -3,6 +3,7 @@ package service;
 import dto.*;
 import entity.Applicant;
 import entity.Job;
+import entity.Notification;
 import exception.JobPortalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,19 @@ public class JobServiceImplementation implements JobService {
     @Autowired
     private JobRepository jobRepository;
 
+    @Autowired
+    private NotificationService notificationService;
     @Override
     public JobDTO postJob(JobDTO jobDTO) throws Exception {
         if(jobDTO.getId()==0){
             jobDTO.setId(Utilities.getNextSequence("jobs"));
             jobDTO.setPostTime(LocalDateTime.now());
+            NotificationDTO notiDTO = new NotificationDTO();
+            notiDTO.setAction("Job Posted Successfully");
+            notiDTO.setMessage("Job Posted Successfully for "+jobDTO.getJobTitle()+" at "+jobDTO.getCompany());
+            notiDTO.setUserId(jobDTO.getPostedBy());
+            notiDTO.setRoute("/posted-job/"+jobDTO.getId());
+            notificationService.sendNotification(notiDTO);
         }
         else{
             jobRepository.findById(jobDTO.getId()).orElseThrow(()->new JobPortalException("Job not found"));
@@ -70,9 +79,22 @@ public class JobServiceImplementation implements JobService {
     public void changeAppStatus(ApplicationDTO applicationDTO) {
         Job job = jobRepository.findById(applicationDTO.getId()).orElseThrow(()->new JobPortalException("Job not found"));
         List<Applicant> applicants = job.getApplicants().stream().map((x)->{
-            if(applicationDTO.getApplicantId()==x.getApplicantId()){
+            if(applicationDTO.getApplicantId() == x.getApplicantId()){
                 x.setApplicationStatus(applicationDTO.getApplicationStatus());
-                if(applicationDTO.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING))x.setInterviewTime(applicationDTO.getInterviewTime());
+                if(applicationDTO.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING)) {
+                    x.setInterviewTime(applicationDTO.getInterviewTime());
+                    NotificationDTO notiDTO = new NotificationDTO();
+                    notiDTO.setAction("Interview Scheduled");
+                    notiDTO.setMessage("Interview scheduled for job id "+applicationDTO.getId());
+                    notiDTO.setUserId(applicationDTO.getApplicantId());
+                    notiDTO.setRoute("/job-history");
+                    try {
+                        notificationService.sendNotification(notiDTO);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
             return x;
         }).toList();
