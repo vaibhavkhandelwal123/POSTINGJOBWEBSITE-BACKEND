@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(scanBasePackages = {"api", "service", "repository", "entity", "dto","utility","exception","config"})
+@SpringBootApplication(scanBasePackages = {"api", "service", "repository", "entity", "dto","utility","exception","config","jwt"})
 @EnableMongoRepositories(basePackages = "repository")
 @EnableScheduling
 public class JobPortalApplication {

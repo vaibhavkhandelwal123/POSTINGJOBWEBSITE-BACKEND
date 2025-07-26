@@ -59,14 +59,14 @@ public class UserServiceImplementation implements UserService {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = userDTO.toEntity();
         user = userRepository.save(user);
-        return user.toEntity();
+        return user.toDTO();
     }
 
     @Override
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(User::toEntity)
+                .map(User::toDTO)
                 .toList();
     }
 
@@ -83,7 +83,7 @@ public class UserServiceImplementation implements UserService {
         if(!passwordEncoder.matches(loginDTO.getPassword(),user.getPassword())){
             throw new JobPortalException("Invalid Credentials");
         }
-        return user.toEntity();
+        return user.toDTO();
     }
 
     @Override
@@ -108,6 +108,12 @@ public class UserServiceImplementation implements UserService {
         noti.setAction("Password Reset");
         notificationService.sendNotification(noti);
         return new ResponseDTO("Password changed successfully");
+    }
+
+    @Override
+    public UserDTO getUserByEmail(String email) throws JobPortalException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new JobPortalException("User not found")).toDTO();
     }
 
     @Override

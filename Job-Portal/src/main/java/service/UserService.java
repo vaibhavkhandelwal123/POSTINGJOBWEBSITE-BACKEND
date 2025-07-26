@@ -15,7 +15,7 @@ public interface UserService {
     void delete(String email);
     public UserDTO loginUser(LoginDTO loginDTO);
     public ResponseDTO forgotUser(LoginDTO loginDTO) throws Exception;
-
+    public UserDTO getUserByEmail(String email) throws JobPortalException;
     public Boolean sendOtp(String email) throws Exception;
 
     public Boolean verifyOtp(String email,String otp);
