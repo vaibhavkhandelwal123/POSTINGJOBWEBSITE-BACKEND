@@ -25,6 +25,7 @@ public class MyUserDetailsService implements UserDetailsService {
                     email,
                     dto.getName(),
                     dto.getPassword(),
+                    dto.getProfileId(),
                     dto.getAccountType(),
                     new ArrayList<>()
             );
